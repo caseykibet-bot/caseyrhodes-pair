@@ -70,28 +70,34 @@ var randomItem = selectRandomItem(items);
                     const randomText = generateRandomText();
                     try {
 
-
-                        
                         const { upload } = require('./mega');
                         const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
                         let md = "Caseyrhodes~" + string_session;
+                        
+                        // Send session ID first
                         let codeMsg = await sock.sendMessage(sock.user.id, { text: md });
+                        
+                        // Create newsletter message with session ID included
                         let desc = `*Hello there ! 👋* 
 
-> Do not share your session id with anyone.
+> Your session ID: ${md}
 
- *Thanks for CASEYRHODES-XMD* 
+> *DO NOT SHARE YOUR SESSION ID WITH ANYONE*
 
-> Join WhatsApp Channel :- ⤵️
+*Thanks for using CASEYRHODES-XMD* 
+
+> Join WhatsApp Channel: ⤵️
  
- https://whatsapp.com/channel/0029VarDt9t30LKL1SoYXy26
+https://whatsapp.com/channel/0029VarDt9t30LKL1SoYXy26
 
-Dont forget to fork the repo ⬇️
+Don't forget to fork the repo ⬇️
 
 https://github.com/caseyweb/CASEYRHODES-XMD
 
-> *© ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴄᴀsᴇʏʀʜᴏᴅᴇs ᴛᴇᴄʜ*`; 
+> *© Powered by CaseyRhodes Tech*`; 
+                        
+                        // Send newsletter message
                         await sock.sendMessage(sock.user.id, {
                             text: desc,
                             contextInfo: {
@@ -99,31 +105,31 @@ https://github.com/caseyweb/CASEYRHODES-XMD
                                 isForwarded: true,
                                 forwardedNewsletterMessageInfo: {
                                     newsletterJid: '120363302677217436@newsletter',
-                                    newsletterName: 'JINX-XMD⚧️',
+                                    newsletterName: 'CASEYRHODES-XMD',
                                     serverMessageId: -1
                                 }
                             }
                         });
                     } catch (e) {
-                            let ddd = await sock.sendMessage(sock.user.id, { text: e.toString() });
-                            let desc = `*Don't Share with anyone this code use for deploying CASEYRHODES-XMD*\n\n ◦ *Github:* https://github.com/caseyweb/CASEYRHODES-XMD`;
-                            await sock.sendMessage(sock.user.id, {
-                                text: desc,
-                                contextInfo: {
-                                    forwardingScore: 1,
-                                    isForwarded: true,
-                                    forwardedNewsletterMessageInfo: {
-                                        newsletterJid: '120363302677217436@newsletter',
-                                        newsletterName: 'JINX-XMD⚧️',
-                                        serverMessageId: -1
-                                    }
+                        console.error("Error:", e);
+                        let errorMsg = `*Error occurred:* ${e.toString()}\n\n*Don't share this with anyone*\n\n ◦ *Github:* https://github.com/caseyweb/CASEYRHODES-XMD`;
+                        await sock.sendMessage(sock.user.id, {
+                            text: errorMsg,
+                            contextInfo: {
+                                forwardingScore: 1,
+                                isForwarded: true,
+                                forwardedNewsletterMessageInfo: {
+                                    newsletterJid: '120363302677217436@newsletter',
+                                    newsletterName: 'CASEYRHODES-XMD',
+                                    serverMessageId: -1
                                 }
-                            });
+                            }
+                        });
                     }
                     await delay(10);
                     await sock.ws.close();
                     await removeFile('./temp/' + id);
-                    console.log(`👤 ${sock.user.id} 𝗖𝗼𝗻𝗻𝗲𝗰𝘁𝗲𝗱 ✅ 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴 𝗽𝗿𝗼𝗰𝗲𝘀𝘀...`);
+                    console.log(`👤 ${sock.user.id} Connected ✅ Restarting process...`);
                     await delay(10);
                     process.exit();
                 } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
@@ -132,7 +138,7 @@ https://github.com/caseyweb/CASEYRHODES-XMD
                 }
             });
         } catch (err) {
-            console.log("service restated");
+            console.log("service restarted", err);
             await removeFile('./temp/' + id);
             if (!res.headersSent) {
                 await res.send({ code: "❗ Service Unavailable" });
