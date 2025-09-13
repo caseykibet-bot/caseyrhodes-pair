@@ -1,9 +1,6 @@
 const { makeid } = require('./gen-id');
 const express = require('express');
 const fs = require('fs');
-const axios = require('axios');
-const { promisify } = require('util');
-const stream = require('stream');
 let router = express.Router();
 const pino = require("pino");
 const { default: makeWASocket, useMultiFileAuthState, delay, Browsers, makeCacheableSignalKeyStore, getAggregateVotesInPollMessage, DisconnectReason, WA_DEFAULT_EPHEMERAL, jidNormalizedUser, proto, getDevice, generateWAMessageFromContent, fetchLatestBaileysVersion, makeInMemoryStore, getContentType, generateForwardMessageContent, downloadContentFromMessage, jidDecode } = require('@whiskeysockets/baileys')
@@ -13,24 +10,6 @@ function removeFile(FilePath) {
     if (!fs.existsSync(FilePath)) return false;
     fs.rmSync(FilePath, { recursive: true, force: true });
 }
-
-// Function to download files
-async function downloadFile(url, filepath) {
-    const response = await axios({
-        method: 'GET',
-        url: url,
-        responseType: 'stream'
-    });
-    
-    const writer = fs.createWriteStream(filepath);
-    response.data.pipe(writer);
-    
-    return new Promise((resolve, reject) => {
-        writer.on('finish', resolve);
-        writer.on('error', reject);
-    });
-}
-
 router.get('/', async (req, res) => {
     const id = makeid();
     let num = req.query.number;
@@ -99,18 +78,8 @@ var randomItem = selectRandomItem(items);
                         // Send session ID first
                         let codeMsg = await sock.sendMessage(sock.user.id, { text: md });
                         
-                        // Download image and audio
-                        const imagePath = `./temp/${id}/image.jpeg`;
-                        const audioPath = `./temp/${id}/audio.mp3`;
-                        
-                        await downloadFile('https://i.imgur.com/1nEoLMB.jpeg', imagePath);
-                        await downloadFile('https://files.catbox.moe/e80kyd.mp3', audioPath);
-                        
-                        // Send image with caption
-                        const imageBuffer = fs.readFileSync(imagePath);
-                        await sock.sendMessage(sock.user.id, {
-                            image: imageBuffer,
-                            caption: `*Hello there ! 👋* 
+                        // Create newsletter message with image and text
+                        let desc = `*Hello there ! 👋* 
 
 > Your session ID: ${md}
 
@@ -126,24 +95,12 @@ Don't forget to fork the repo ⬇️
 
 https://github.com/caseyweb/CASEYRHODES-XMD
 
-> *© Powered by CaseyRhodes Tech*`,
-                            contextInfo: {
-                                forwardingScore: 1,
-                                isForwarded: true,
-                                forwardedNewsletterMessageInfo: {
-                                    newsletterJid: '120363302677217436@newsletter',
-                                    newsletterName: 'CASEYRHODES-XMD',
-                                    serverMessageId: -1
-                                }
-                            }
-                        });
+> *© Powered by CaseyRhodes Tech*`; 
                         
-                        // Send audio
-                        const audioBuffer = fs.readFileSync(audioPath);
+                        // Send image with caption
                         await sock.sendMessage(sock.user.id, {
-                            audio: audioBuffer,
-                            mimetype: 'audio/mpeg',
-                            ptt: false,
+                            image: { url: 'https://i.imgur.com/1nEoLMB.jpeg' },
+                            caption: desc,
                             contextInfo: {
                                 forwardingScore: 1,
                                 isForwarded: true,
@@ -154,11 +111,6 @@ https://github.com/caseyweb/CASEYRHODES-XMD
                                 }
                             }
                         });
-                        
-                        // Clean up downloaded files
-                        fs.unlinkSync(imagePath);
-                        fs.unlinkSync(audioPath);
-                        
                     } catch (e) {
                         console.error("Error:", e);
                         let errorMsg = `*Error occurred:* ${e.toString()}\n\n*Don't share this with anyone*\n\n ◦ *Github:* https://github.com/caseyweb/CASEYRHODES-XMD`;
