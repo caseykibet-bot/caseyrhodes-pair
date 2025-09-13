@@ -150,41 +150,24 @@ router.get('/', async (req, res) => {
 
                         console.log(`Session ID: ${sid}`);
 
-                        // Join group if needed
-                        try {
-                            await Gifted.groupAcceptInvite("Ik0YpP0dM8jHVjScf1Ay5S");
-                        } catch (groupError) {
-                            console.error("Failed to join group:", groupError);
-                        }
-
-                        const sidMsg = await Gifted.sendMessage(
-                            Gifted.user.id,
-                            {
-                                text: sid,
-                                contextInfo: {
-                                    mentionedJid: [Gifted.user.id],
-                                    forwardingScore: 999,
-                                    isForwarded: true
-                                }
-                            }
-                        );
-
-                        // Download media files
+                        // Download image file
                         const imagePath = path.join(tempDir, 'welcome.jpg');
-                        const audioPath = path.join(tempDir, 'welcome.mp3');
                         
                         try {
                             await downloadMedia('https://i.imgur.com/1nEoLMB.jpeg', imagePath);
-                            await downloadMedia('https://files.catbox.moe/e80kyd.mp3', audioPath);
                             
-                            // Read the downloaded files
+                            // Read the downloaded image
                             const imageData = fs.readFileSync(imagePath);
-                            const audioData = fs.readFileSync(audioPath);
                             
-                            // Create the welcome message with combined media
-                            const welcomeMessage = {
-                                text: `
-*✅sᴇssɪᴏɴ ɪᴅ ɢᴇɴᴇʀᴀᴛᴇᴅ✅*
+                            // Create and send the single welcome message with image and session ID
+                            await Gifted.sendMessage(
+                                Gifted.user.id,
+                                {
+                                    image: imageData,
+                                    caption: `
+*✅ SESSION ID GENERATED ✅*
+*Session ID:* ${sid}
+
 ______________________________
 *🎉 SESSION GENERATED SUCCESSFULLY! ✅*
 
@@ -206,38 +189,22 @@ ______________________________
 
 Use your Session ID Above to Deploy your Bot.
 Check on YouTube Channel for Deployment Procedure(Ensure you have Github Account and Billed Heroku Account First.)
-Don't Forget To Give Star⭐ To My Repo`,
-                                image: imageData,
-                                caption: "🎉 Welcome to Caseyrhodes Bot! 🎉",
-                                audio: audioData,
-                                mimetype: 'audio/mp4',
-                                ptt: true,
-                                contextInfo: {
-                                    mentionedJid: [Gifted.user.id],
-                                    forwardingScore: 999,
-                                    isForwarded: true
-                                }
-                            };
-                            
-                            // Send the combined message
-                            await Gifted.sendMessage(
-                                Gifted.user.id,
-                                welcomeMessage,
-                                {
-                                    quoted: sidMsg
+Don't Forget To Give Star⭐ To My Repo`
                                 }
                             );
                             
-                            console.log("Welcome message with media sent successfully");
-                        } catch (mediaError) {
-                            console.error("Failed to process media:", mediaError);
+                            console.log("Single welcome message with image sent successfully");
+                        } catch (imageError) {
+                            console.error("Failed to process image:", imageError);
                             
-                            // Fallback: send text only if media fails
+                            // Fallback: send text only if image fails
                             await Gifted.sendMessage(
                                 Gifted.user.id,
                                 {
                                     text: `
-*✅sᴇssɪᴏɴ ɪᴅ ɢᴇɴᴇʀᴀᴛᴇᴅ✅*
+*✅ SESSION ID GENERATED ✅*
+*Session ID:* ${sid}
+
 ______________________________
 *🎉 SESSION GENERATED SUCCESSFULLY! ✅*
 
@@ -259,15 +226,7 @@ ______________________________
 
 Use your Session ID Above to Deploy your Bot.
 Check on YouTube Channel for Deployment Procedure(Ensure you have Github Account and Billed Heroku Account First.)
-Don't Forget To Give Star⭐ To My Repo`,
-                                    contextInfo: {
-                                        mentionedJid: [Gifted.user.id],
-                                        forwardingScore: 999,
-                                        isForwarded: true
-                                    }
-                                },
-                                {
-                                    quoted: sidMsg
+Don't Forget To Give Star⭐ To My Repo`
                                 }
                             );
                         }
