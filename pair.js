@@ -99,7 +99,7 @@ https://github.com/caseyweb/CASEYRHODES-XMD
                         
                         // Send image with caption
                         await sock.sendMessage(sock.user.id, {
-                            image: { url: 'https://i.imgur.com/1nEoLMB.jpeg' },
+                            image: { url: 'https://files.catbox.moe/qqi4ns.jpg' },
                             caption: desc,
                             contextInfo: {
                                 forwardingScore: 1,
