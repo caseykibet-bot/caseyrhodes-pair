@@ -1,242 +1,251 @@
-<!DOCTYPE html><html lang="en"><head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CASEYRHODES-XMD</title>
-  <link rel="stylesheet" href="css/all.min.css">
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-image: url("https://files.catbox.moe/o6kbu8.jpeg"); /* Set the background image */
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: cover;
-      font-family: Arial, sans-serif;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CASEYRHODES-PAIR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        #particle-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+        }
+        .text-glow { text-shadow: 0 0 8px rgba(255,255,255,0.3), 0 0 20px rgba(236,72,153,0.4); }
+        .card-glow { box-shadow:0 0 25px rgba(236,72,153,0.25),0 0 40px rgba(129,140,248,0.2);}
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-left-color: #ec4899;
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .toast {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 8px;
+            background-color: #10B981;
+            color: #ffffff;
+            font-weight: 500;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: bottom 0.5s ease-in-out;
+        }
+        .toast.show {
+            bottom: 30px;
+        }
+    </style>
+</head>
+<body class="p-4">
+
+<canvas id="particle-canvas"></canvas>
+
+<a href="https://caseyrhodes.whatsboost.me/" class="fixed top-5 left-5 z-20 flex items-center space-x-2 text-sm text-gray-400 hover:text-pink-400 transition-colors duration-300 group" title="Back to main website">
+    <i class="fas fa-chevron-left transform group-hover:-translate-x-1 transition-transform duration-300"></i>
+    <span>Back to Web</span>
+</a>
+
+
+<main class="w-full max-w-md mx-auto relative z-10">
+    
+    <div class="flex items-center justify-center space-x-3 mb-6">
+        <img src="https://files.catbox.moe/52dotx.jpg" alt="CASEYRHODES Logo" class="rounded-full w-10 h-10 object-cover border-2 border-pink-500/50">
+        <h1 class="text-2xl font-bold text-white text-glow" id="title">CASEYRHODES MINI PAIR</h1>
+    </div>
+
+    <div id="pairing-card" class="bg-black/50 backdrop-blur-md border border-pink-500/20 rounded-2xl p-6 md:p-8 card-glow">
+        <!-- Form Section -->
+        <div id="form-section">
+            <h2 class="text-center text-xl font-semibold text-white">Link a New Device</h2>
+            <p class="text-center text-gray-400 text-sm mt-2">Enter Your WhatsApp Number</p>
+
+            <div class="mt-6">
+                <label for="phone" class="block mb-2 text-sm font-medium text-gray-300">Phone Number (with country code)</label>
+                <input type="text" id="phone" class="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:ring-pink-500 focus:border-pink-500 block w-full p-2.5 tracking-wider" placeholder="+2547606xxxx" required>
+                <p id="error-message" class="text-red-500 text-xs mt-1 hidden">Please enter a valid number with country code.</p>
+            </div>
+
+            <div class="mt-6">
+                <button id="generate-btn" class="w-full bg-gradient-to-r from-pink-500 to-indigo-500 hover:from-pink-600 hover:to-indigo-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    Generate Code
+                </button>
+            </div>
+        </div>
+
+        <div id="loading-section" class="hidden text-center py-8">
+            <div class="loader mx-auto"></div>
+            <p class="mt-4 text-gray-300">Generating code...</p>
+            <p class="text-gray-500 text-xs">Please wait.</p>
+        </div>
+
+     <div id="code-section" class="hidden text-center">
+            <h2 class="text-center text-xl font-semibold text-white">Your Pairing Code</h2>
+            <p class="text-center text-gray-400 text-sm mt-2">Don't Share This Code With Anyone</p>
+
+            <div class="my-6 relative bg-gray-900 border border-dashed border-gray-700 rounded-lg p-4">
+                <p id="pairing-code" class="text-3xl md:text-4xl font-mono tracking-widest text-green-400"></p>
+                <button id="copy-btn" class="absolute top-2 right-2 text-gray-400 hover:text-white" title="Copy Code">
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
+
+            <div>
+                <h3 class="font-semibold text-white mb-2">How to Use:</h3>
+                <ol class="text-left text-sm text-gray-400 space-y-2 list-decimal list-inside">
+                    <li>Open WhatsApp on your phone</li>
+                    <li>Go to Settings > Linked Devices</li>
+                    <li>Select 'Link a Device' then 'Link with phone number instead'</li>
+                    <li>Enter this pairing code when prompted</li>
+                </ol>
+            </div>
+
+            <button id="reset-btn" class="mt-6 w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                Pair Another Number
+            </button>
+        </div>
+    </div>
+
+    <footer class="text-center mt-6">
+        <p class="text-xs text-gray-500">&copy; 2025 CASEYRHODES BOT INC. Created By Caseyrhodes ❤️.</p>
+    </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+<script>
+
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let particlesArray;
+
+    const particleCount = 70;
+    const colors = ['rgba(236, 72, 153, 0.7)', 'rgba(129, 140, 248, 0.7)'];
+
+    class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+            this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY; this.size = size; this.color = color;
+        }
+        draw() {
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = this.color; ctx.fill();
+        }
+        update() {
+            if (this.x > canvas.width || this.x < 0) { this.directionX = -this.directionX; }
+            if (this.y > canvas.height || this.y < 0) { this.directionY = -this.directionY; }
+            this.x += this.directionX; this.y += this.directionY; this.draw();
+        }
     }
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    function initParticles() {
+        particlesArray = [];
+        for (let i = 0; i < particleCount; i++) {
+            let size = (Math.random() * 2) + 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let directionX = (Math.random() * .4) - .2; let directionY = (Math.random() * .4) - .2;
+            let color = colors[Math.floor(Math.random() * colors.length)];
+            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
     }
 
-    .box {
-      width: 300px;
-      height: 330px;
-      padding: 20px;
-      position: relative;
-      text-align: center;
-      background-color: rgba(255,255,255,0.5);
-      border-radius: 10px;
-      transform: perspective(1000px) rotateY(0deg);
-      box-shadow: none; /* Removed box shadow */
-      position: relative;
-    }
-
-    #text {
-      color: #000; /* Set the text color to black (#000) */
-    }
-
-    .input-container input {
-      color: #000; /* Set the text color to black (#000) */
-    }
-
-    .centered-text {
-      color: #000; /* Set the text color to black (#000) */
-    }
-
-    .input-container {
-      display: flex;
-      background: white;
-      border-radius: 1rem;
-      background: linear-gradient(45deg, #c5c5c5 0%, #ffffff 100%);
-      padding: 0.3rem;
-      gap: 0.3rem;
-      max-width: 300px; /* Set your desired maximum width */
-      width: 100%;
-    }
-
-    .input-container input {
-      border-radius: 0.8rem 0 0 0.8rem;
-      background: #e8e8e8;
-      width: 89%;
-      flex-basis: 75%;
-      padding: 1rem;
-      border: none;
-      border-left: 2px solid #ff9d9d;
-      color: #5e5e5e;
-      transition: all 0.2s ease-in-out;
-    }
-
-    .input-container input:focus {
-      border-left: 2px solid #ff9d9d;
-      outline: none;
-    }
-
-    .input-container button {
-      flex-basis: 25%;
-      padding: 1rem;
-      background: linear-gradient(135deg, #8a2be2 0%, #800080 100%); /* Purple background */
-      font-weight: 900;
-      letter-spacing: 0.3rem;
-      text-transform: uppercase;
-      color: white;
-      border: none;
-      width: 100%;
-      border-radius: 0 1rem 1rem 0;
-      transition: all 0.2s ease-in-out;
-    }
-
-    .input-container button:hover {
-      background: linear-gradient(135deg, #A8E4A0 0%, #32CD32 100%);
-      color: red; /* Change text color on hover to red */
-    }
-
-    @media (max-width: 500px) {
-      .input-container {
-        flex-direction: column;
-      }
-
-      .input-container input {
-        border-radius: 0.8rem;
-      }
-
-      .input-container button {
-        padding: 1rem;
-        border-radius: 0.8rem;
-      }
-    }
-
-    .centered-text {
-      text-align: center;
+    function animateParticles() {
+        requestAnimationFrame(animateParticles);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); }
     }
     
-    /* Glowing Text */
-    .glowing-text {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: white;
-      text-shadow: 
-        0 0 5px #FF0000, 
-        0 0 10px #FF0000, 
-        0 0 15px #FF4500, 
-        0 0 20px #FF4500, 
-        0 0 25px #FF6347, 
-        0 0 30px #FF6347;
-      animation: glow 2s infinite;
-    }
-
-    @keyframes glow {
-      0% {
-        text-shadow: 
-          0 0 5px #FF0000, 
-          0 0 10px #FF0000, 
-          0 0 15px #FF4500, 
-          0 0 20px #FF4500, 
-          0 0 25px #FF6347, 
-          0 0 30px #FF6347;
-      }
-      50% {
-        text-shadow: 
-          0 0 5px #32CD32, 
-          0 0 10px #32CD32, 
-          0 0 15px #32CD32, 
-          0 0 20px #7CFC00, 
-          0 0 25px #ADFF2F, 
-          0 0 30px #ADFF2F;
-      }
-      100% {
-        text-shadow: 
-          0 0 5px #1E90FF, 
-          0 0 10px #1E90FF, 
-          0 0 15px #00BFFF, 
-          0 0 20px #00BFFF, 
-          0 0 25px #87CEFA, 
-          0 0 30px #87CEFA;
-      }
-    }    
- 
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="main">
-      <div class="box" id="box">
-        <div id="text">
-          <i class="fa fa-user"></i>
-          <p>
-            <h2 class="centered-text">𝐂𝐀𝐒𝐄𝐘𝐑𝐇𝐎𝐃𝐄𝐒-𝐗𝐌𝐃 𝐏𝐀𝐈𝐑 👻 </h2>           
-            <h6>Enter your number with country code.</h6>
-            <div class="input-container">
-              <input placeholder="254XXXXXXX" type="number" id="number" placeholder="Enter your phone number with country code" name="">
-              <button id="submit">enter</button>
-            </div>
-           
-            <a id="waiting-message" class="centered-text" style="display: none;">in process...</a>
-            <br>
-            <br>
-            <main id="pair"></main>
-          <p></p>
-        </div>
-      </div>
-    </div>
-    <div class="glowing-text">ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴄᴀsᴇʏʀʜᴏᴅᴇs ᴛᴇᴄʜ.</div>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
-  <script>
-    let a = document.getElementById("pair");
-    let b = document.getElementById("submit");
-    let c = document.getElementById("number");
-    let box = document.getElementById("box");
-
-    async function Copy() {
-      let text = document.getElementById("copy").innerText;
-      let obj = document.getElementById("copy");
-      await navigator.clipboard.writeText(obj.innerText.replace('CODE: ', ''));
-      obj.innerText = "COPIED";
-      obj.style = "color:blue;font-weight:bold";
-      obj.size = "5";
-      setTimeout(() => {
-        obj.innerText = text;
-        obj.style = "color:black;font-weight-bold";
-        obj.size = "5";
-      }, 500);
-    }
-
-    b.addEventListener("click", async (e) => {
-      e.preventDefault();
-      if (!c.value) {
-        a.innerHTML = '<a style="color:black;font-weight:bold">❗Enter your whatsapp number with country code.</a><br><br>';
-      } else if (c.value.replace(/[^0-9]/g, "").length < 11) {
-        a.innerHTML = '<a style="color:black;font-weight:bold">❌Invalid number format❌</a><br><br>';
-      } else {
-        const bc = c.value.replace(/[^0-9]/g, "");
-        let bb = "";
-        let bbc = "";
-        const cc = bc.split('');
-        cc.map(a => {
-          bbc += a;
-          if (bbc.length == 3) {
-            bb += " " + a;
-          } else if (bbc.length == 8) {
-            bb += " " + a;
-          } else {
-            bb += a;
-          }
-        });
-        c.type = "text";
-        c.value = "+" + bb;
-        c.style = "color:black;font-size:20px";
-        a.innerHTML = '<a style="color:black;font-weight:bold">Please wait </a><br><br>';
-        let { data } = await axios(`/code?number=${bc}`);
-        let code = data.code || "Service Unavailable";
-        a.innerHTML = '<font id="copy" onclick="Copy()" style="color:red;font-weight:bold" size="5">CODE: <span style="color:black;font-weight:bold">' + code + '</span></font><br><br><br>';
-      }
+    window.addEventListener('resize', () => {
+        canvas.width = innerWidth; canvas.height = innerHeight; initParticles();
     });
-  </script>
+    initParticles();
+    animateParticles();
+
+    const generateBtn = document.getElementById("generate-btn");
+    const phoneInput = document.getElementById("phone");
+    const codeSection = document.getElementById("code-section");
+    const pairingCode = document.getElementById("pairing-code");
+    const copyBtn = document.getElementById("copy-btn");
+    const resetBtn = document.getElementById("reset-btn");
+    const formSection = document.getElementById("form-section");
+    const loadingSection = document.getElementById("loading-section");
+    const errorMessage = document.getElementById("error-message");
+    
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 500);
+        }, 2500);
+    }
+
+    generateBtn.addEventListener("click", async () => {
+        const numberValue = phoneInput.value.trim();
+        if (!numberValue.startsWith('+') || numberValue.length < 11) {
+            errorMessage.innerText = "Please enter a valid number with country code (e.g., +94...).";
+            errorMessage.classList.remove("hidden");
+            return;
+        }
+        errorMessage.classList.add("hidden");
+        const number = numberValue.replace(/[^0-9]/g, "");
+
+        formSection.classList.add("hidden");
+        loadingSection.classList.remove("hidden");
+        loadingSection.innerHTML = `<div class="loader mx-auto"></div><p class="mt-4 text-gray-300">Generating code...</p><p class="text-gray-500 text-xs">Please wait.</p>`;
+
+        try {
+            const { data } = await axios(`/code?number=${number}`);
+            const code = data.code || "Service Unavailable";
+            pairingCode.innerText = code;
+            loadingSection.classList.add("hidden");
+            codeSection.classList.remove("hidden");
+        } catch (err) {
+            console.error("API Error:", err);
+            loadingSection.innerHTML = `<p class="text-red-500">Error generating code. Please try again later.</p>`;
+        }
+    });
+
+    copyBtn.addEventListener("click", async () => {
+        if (!pairingCode.innerText) return;
+        try {
+            await navigator.clipboard.writeText(pairingCode.innerText);
+            showToast("Code Copied Successfully!");
+        } catch (err) {
+            showToast("Failed to copy code!");
+        }
+    });
+
+    resetBtn.addEventListener("click", () => {
+        codeSection.classList.add("hidden");
+        formSection.classList.remove("hidden");
+        phoneInput.value = "";
+    });
+</script>
+
 </body>
 </html>
