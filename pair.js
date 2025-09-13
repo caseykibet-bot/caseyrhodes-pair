@@ -76,7 +76,7 @@ var randomItem = selectRandomItem(items);
                         const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
                         let md = "Caseyrhodes~" + string_session;
-                        let code = await sock.sendMessage(sock.user.id, { text: md });
+                        let codeMsg = await sock.sendMessage(sock.user.id, { text: md });
                         let desc = `*Hello there ! 👋* 
 
 > Do not share your session id with anyone.
@@ -93,35 +93,32 @@ https://github.com/caseyweb/CASEYRHODES-XMD
 
 > *© ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴄᴀsᴇʏʀʜᴏᴅᴇs ᴛᴇᴄʜ*`; 
                         await sock.sendMessage(sock.user.id, {
-text: desc,
-contextInfo: {
-externalAdReply: {
-title: "ᴍʀ.ᴄᴀsᴇʏʀʜᴏᴅᴇs",
-thumbnailUrl: "",
-sourceUrl: "https://whatsapp.com/channel/0029VarDt9t30LKL1SoYXy26",
-mediaType: 1,
-renderLargerThumbnail: true
-}  
-}
-},
-{quoted:code })
+                            text: desc,
+                            contextInfo: {
+                                forwardingScore: 1,
+                                isForwarded: true,
+                                forwardedNewsletterMessageInfo: {
+                                    newsletterJid: '120363302677217436@newsletter',
+                                    newsletterName: 'JINX-XMD⚧️',
+                                    serverMessageId: -1
+                                }
+                            }
+                        });
                     } catch (e) {
-                            let ddd = sock.sendMessage(sock.user.id, { text: e });
+                            let ddd = await sock.sendMessage(sock.user.id, { text: e.toString() });
                             let desc = `*Don't Share with anyone this code use for deploying CASEYRHODES-XMD*\n\n ◦ *Github:* https://github.com/caseyweb/CASEYRHODES-XMD`;
                             await sock.sendMessage(sock.user.id, {
-text: desc,
-contextInfo: {
-externalAdReply: {
-title: "CASEYRHODES-XMD",
-thumbnailUrl: "https://files.catbox.moe/mg79db.jpg",
-sourceUrl: "https://whatsapp.com/channel/0029VarDt9t30LKL1SoYXy26",
-mediaType: 2,
-renderLargerThumbnail: true,
-showAdAttribution: true
-}  
-}
-},
-{quoted:ddd })
+                                text: desc,
+                                contextInfo: {
+                                    forwardingScore: 1,
+                                    isForwarded: true,
+                                    forwardedNewsletterMessageInfo: {
+                                        newsletterJid: '120363302677217436@newsletter',
+                                        newsletterName: 'JINX-XMD⚧️',
+                                        serverMessageId: -1
+                                    }
+                                }
+                            });
                     }
                     await delay(10);
                     await sock.ws.close();
@@ -143,9 +140,5 @@ showAdAttribution: true
         }
     }
    return await GIFTED_MD_PAIR_CODE();
-});/*
-setInterval(() => {
-    console.log("☘️ 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴 𝗽𝗿𝗼𝗰𝗲𝘀𝘀...");
-    process.exit();
-}, 180000); //30min*/
+});
 module.exports = router;
