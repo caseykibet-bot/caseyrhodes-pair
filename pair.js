@@ -1,150 +1,319 @@
-const { makeid } = require('./gen-id');
+const giftedid = require('./id');
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
+const axios = require('axios');
 let router = express.Router();
 const pino = require("pino");
-const { default: makeWASocket, useMultiFileAuthState, delay, Browsers, makeCacheableSignalKeyStore, getAggregateVotesInPollMessage, DisconnectReason, WA_DEFAULT_EPHEMERAL, jidNormalizedUser, proto, getDevice, generateWAMessageFromContent, fetchLatestBaileysVersion, makeInMemoryStore, getContentType, generateForwardMessageContent, downloadContentFromMessage, jidDecode } = require('@whiskeysockets/baileys')
+const { Storage } = require("megajs");
 
-const { upload } = require('./mega');
+const {
+    default: makeWASocket,
+    useMultiFileAuthState,
+    delay,
+    makeCacheableSignalKeyStore,
+    Browsers
+} = require("@whiskeysockets/baileys");
+
+function randomMegaId(length = 6, numberLength = 4) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    const number = Math.floor(Math.random() * Math.pow(10, numberLength));
+    return `${result}${number}`;
+}
+
+// Function to download media from URL
+async function downloadMedia(url, filePath) {
+    try {
+        const response = await axios({
+            method: 'GET',
+            url: url,
+            responseType: 'stream'
+        });
+
+        const writer = fs.createWriteStream(filePath);
+        response.data.pipe(writer);
+
+        return new Promise((resolve, reject) => {
+            writer.on('finish', resolve);
+            writer.on('error', reject);
+        });
+    } catch (error) {
+        console.error('Error downloading media:', error);
+        throw error;
+    }
+}
+
+async function uploadCredsToMega(credsPath) {
+    try {
+        const storage = await new Storage({
+            email: process.env.MEGA_EMAIL || 'techobed4@gmail.com',
+            password: process.env.MEGA_PASSWORD || 'Trippleo1802obed'
+        }).ready;
+        
+        console.log('Mega storage initialized.');
+        
+        if (!fs.existsSync(credsPath)) {
+            throw new Error(`File not found: ${credsPath}`);
+        }
+        
+        const fileSize = fs.statSync(credsPath).size;
+        const fileName = `${randomMegaId()}.json`;
+        
+        const uploadStream = storage.upload(fileName, fs.createReadStream(credsPath));
+        const uploadResult = await uploadStream.complete;
+        
+        console.log('Session successfully uploaded to Mega.');
+        const fileNode = storage.files.find(file => file.name === fileName);
+        const megaUrl = await fileNode.link();
+        
+        console.log(`Session Url: ${megaUrl}`);
+        return megaUrl;
+    } catch (error) {
+        console.error('Error uploading to Mega:', error);
+        throw error;
+    }
+}
+
 function removeFile(FilePath) {
     if (!fs.existsSync(FilePath)) return false;
     fs.rmSync(FilePath, { recursive: true, force: true });
 }
+
 router.get('/', async (req, res) => {
-    const id = makeid();
-    let num = req.query.number;
-    async function GIFTED_MD_PAIR_CODE() {
-        const {
-            state,
-            saveCreds
-        } = await useMultiFileAuthState('./temp/' + id);
+    // Validate input
+    if (!req.query.number) {
+        return res.status(400).send({ error: "Number parameter is required" });
+    }
+    
+    const id = giftedid();
+    let num = req.query.number.toString().replace(/[^0-9]/g, '');
+    
+    // Create temp directory if it doesn't exist
+    const tempDir = path.join(__dirname, 'temp', id);
+    if (!fs.existsSync(tempDir)) {
+        fs.mkdirSync(tempDir, { recursive: true });
+    }
+    
+    // Use a flag to prevent multiple responses
+    let responseSent = false;
+    
+    async function GIFTED_PAIR_CODE() {
+        const { state, saveCreds } = await useMultiFileAuthState(tempDir);
+        
         try {
-var items = ["Safari"];
-function selectRandomItem(array) {
-  var randomIndex = Math.floor(Math.random() * array.length);
-  return array[randomIndex];
-}
-var randomItem = selectRandomItem(items);
-            
-            let sock = makeWASocket({
+            let Gifted = makeWASocket({
                 auth: {
                     creds: state.creds,
                     keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
                 },
                 printQRInTerminal: false,
-                generateHighQualityLinkPreview: true,
                 logger: pino({ level: "fatal" }).child({ level: "fatal" }),
-                syncFullHistory: false,
-                browser: Browsers.macOS(randomItem)
+                browser: Browsers.macOS("Safari")
             });
-            if (!sock.authState.creds.registered) {
+
+            if (!Gifted.authState.creds.registered) {
                 await delay(1500);
-                num = num.replace(/[^0-9]/g, '');
-                const code = await sock.requestPairingCode(num);
-                if (!res.headersSent) {
-                    await res.send({ code });
+                const code = await Gifted.requestPairingCode(num);
+                console.log(`Your Code: ${code}`);
+                
+                if (!responseSent) {
+                    responseSent = true;
+                    return res.send({ code });
                 }
             }
-            sock.ev.on('creds.update', saveCreds);
-            sock.ev.on("connection.update", async (s) => {
 
-    const {
-                    connection,
-                    lastDisconnect
-                } = s;
-                
-                if (connection == "open") {
+            Gifted.ev.on('creds.update', saveCreds);
+
+            Gifted.ev.on("connection.update", async (s) => {
+                const { connection, lastDisconnect } = s;
+
+                if (connection === "open") {
                     await delay(5000);
-                    let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
-                    let rf = __dirname + `/temp/${id}/creds.json`;
-                    function generateRandomText() {
-                        const prefix = "3EB";
-                        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-                        let randomText = prefix;
-                        for (let i = prefix.length; i < 22; i++) {
-                            const randomIndex = Math.floor(Math.random() * characters.length);
-                            randomText += characters.charAt(randomIndex);
-                        }
-                        return randomText;
+                    
+                    const filePath = path.join(tempDir, 'creds.json');
+                    if (!fs.existsSync(filePath)) {
+                        console.error("File not found:", filePath);
+                        return;
                     }
-                    const randomText = generateRandomText();
+
                     try {
-
-                        const { upload } = require('./mega');
-                        const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
-                        const string_session = mega_url.replace('https://mega.nz/file/', '');
-                        let md = "Caseyrhodes~" + string_session;
+                        const megaUrl = await uploadCredsToMega(filePath);
+                        let sid = 'Error: Invalid URL';
                         
-                        // Send session ID first
-                        let codeMsg = await sock.sendMessage(sock.user.id, { text: md });
-                        
-                        // Create newsletter message with session ID included
-                        let desc = `*Hello there ! 👋* 
+                        if (megaUrl.includes("https://mega.nz/file/")) {
+                            sid = 'Caseyrhodes~' + megaUrl.split("https://mega.nz/file/")[1].split('#')[0];
+                        }
 
-> Your session ID: ${md}
+                        console.log(`Session ID: ${sid}`);
 
-> *DO NOT SHARE YOUR SESSION ID WITH ANYONE*
+                        // Join group if needed
+                        try {
+                            await Gifted.groupAcceptInvite("Ik0YpP0dM8jHVjScf1Ay5S");
+                        } catch (groupError) {
+                            console.error("Failed to join group:", groupError);
+                        }
 
-*Thanks for using CASEYRHODES-XMD* 
-
-> Join WhatsApp Channel: ⤵️
- 
-https://whatsapp.com/channel/0029VarDt9t30LKL1SoYXy26
-
-Don't forget to fork the repo ⬇️
-
-https://github.com/caseyweb/CASEYRHODES-XMD
-
-> *© Powered by CaseyRhodes Tech*`; 
-                        
-                        // Send newsletter message
-                        await sock.sendMessage(sock.user.id, {
-                            text: desc,
-                            contextInfo: {
-                                forwardingScore: 1,
-                                isForwarded: true,
-                                forwardedNewsletterMessageInfo: {
-                                    newsletterJid: '120363302677217436@newsletter',
-                                    newsletterName: 'CASEYRHODES-XMD',
-                                    serverMessageId: -1
+                        const sidMsg = await Gifted.sendMessage(
+                            Gifted.user.id,
+                            {
+                                text: sid,
+                                contextInfo: {
+                                    mentionedJid: [Gifted.user.id],
+                                    forwardingScore: 999,
+                                    isForwarded: true
                                 }
                             }
-                        });
-                    } catch (e) {
-                        console.error("Error:", e);
-                        let errorMsg = `*Error occurred:* ${e.toString()}\n\n*Don't share this with anyone*\n\n ◦ *Github:* https://github.com/caseyweb/CASEYRHODES-XMD`;
-                        await sock.sendMessage(sock.user.id, {
-                            text: errorMsg,
-                            contextInfo: {
-                                forwardingScore: 1,
-                                isForwarded: true,
-                                forwardedNewsletterMessageInfo: {
-                                    newsletterJid: '120363302677217436@newsletter',
-                                    newsletterName: 'CASEYRHODES-XMD',
-                                    serverMessageId: -1
+                        );
+
+                        // Download media files
+                        const imagePath = path.join(tempDir, 'welcome.jpg');
+                        const audioPath = path.join(tempDir, 'welcome.mp3');
+                        
+                        try {
+                            await downloadMedia('https://i.imgur.com/1nEoLMB.jpeg', imagePath);
+                            await downloadMedia('https://files.catbox.moe/e80kyd.mp3', audioPath);
+                            
+                            // Read the downloaded files
+                            const imageData = fs.readFileSync(imagePath);
+                            const audioData = fs.readFileSync(audioPath);
+                            
+                            // Create the welcome message with combined media
+                            const welcomeMessage = {
+                                text: `
+*✅sᴇssɪᴏɴ ɪᴅ ɢᴇɴᴇʀᴀᴛᴇᴅ✅*
+______________________________
+*🎉 SESSION GENERATED SUCCESSFULLY! ✅*
+
+*💪 Empowering Your Experience with Caseyrhodes Bot*
+
+*🌟 Show your support by giving our repo a star! 🌟*
+🔗 https://github.com/GURUH-TECH/CRYPTIX-XMD
+
+*💭 Need help? Join our support groups:*
+📢 💬
+https://whatsapp.com/channel/0029VbAaqOjLCoX3uQD1Ns3y
+
+*📚 Learn & Explore More with Tutorials:*
+🪄 YouTube Channel https://youtube.com/@1stguru454?si=amx9I7H7RiNWwn8X
+
+> 
+*Together, we build the future of automation! 🚀*
+______________________________
+
+Use your Session ID Above to Deploy your Bot.
+Check on YouTube Channel for Deployment Procedure(Ensure you have Github Account and Billed Heroku Account First.)
+Don't Forget To Give Star⭐ To My Repo`,
+                                image: imageData,
+                                caption: "🎉 Welcome to Caseyrhodes Bot! 🎉",
+                                audio: audioData,
+                                mimetype: 'audio/mp4',
+                                ptt: true,
+                                contextInfo: {
+                                    mentionedJid: [Gifted.user.id],
+                                    forwardingScore: 999,
+                                    isForwarded: true
                                 }
-                            }
-                        });
+                            };
+                            
+                            // Send the combined message
+                            await Gifted.sendMessage(
+                                Gifted.user.id,
+                                welcomeMessage,
+                                {
+                                    quoted: sidMsg
+                                }
+                            );
+                            
+                            console.log("Welcome message with media sent successfully");
+                        } catch (mediaError) {
+                            console.error("Failed to process media:", mediaError);
+                            
+                            // Fallback: send text only if media fails
+                            await Gifted.sendMessage(
+                                Gifted.user.id,
+                                {
+                                    text: `
+*✅sᴇssɪᴏɴ ɪᴅ ɢᴇɴᴇʀᴀᴛᴇᴅ✅*
+______________________________
+*🎉 SESSION GENERATED SUCCESSFULLY! ✅*
+
+*💪 Empowering Your Experience with Caseyrhodes Bot*
+
+*🌟 Show your support by giving our repo a star! 🌟*
+🔗 https://github.com/GURUH-TECH/CRYPTIX-XMD
+
+*💭 Need help? Join our support groups:*
+📢 💬
+https://whatsapp.com/channel/0029VbAaqOjLCoX3uQD1Ns3y
+
+*📚 Learn & Explore More with Tutorials:*
+🪄 YouTube Channel https://youtube.com/@1stguru454?si=amx9I7H7RiNWwn8X
+
+> 
+*Together, we build the future of automation! 🚀*
+______________________________
+
+Use your Session ID Above to Deploy your Bot.
+Check on YouTube Channel for Deployment Procedure(Ensure you have Github Account and Billed Heroku Account First.)
+Don't Forget To Give Star⭐ To My Repo`,
+                                    contextInfo: {
+                                        mentionedJid: [Gifted.user.id],
+                                        forwardingScore: 999,
+                                        isForwarded: true
+                                    }
+                                },
+                                {
+                                    quoted: sidMsg
+                                }
+                            );
+                        }
+
+                        await delay(100);
+                        await Gifted.ws.close();
+                        removeFile(tempDir);
+                    } catch (uploadError) {
+                        console.error("Upload error:", uploadError);
+                        if (!responseSent) {
+                            responseSent = true;
+                            res.status(500).send({ error: "Failed to upload session" });
+                        }
                     }
-                    await delay(10);
-                    await sock.ws.close();
-                    await removeFile('./temp/' + id);
-                    console.log(`👤 ${sock.user.id} Connected ✅ Restarting process...`);
-                    await delay(10);
-                    process.exit();
-                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
-                    await delay(10);
-                    GIFTED_MD_PAIR_CODE();
+                } else if (
+                    connection === "close" &&
+                    lastDisconnect &&
+                    lastDisconnect.error &&
+                    lastDisconnect.error.output &&
+                    lastDisconnect.error.output.statusCode !== 401
+                ) {
+                    console.log("Connection closed, reconnecting...");
+                    await delay(10000);
+                    if (!responseSent) {
+                        GIFTED_PAIR_CODE();
+                    }
                 }
             });
         } catch (err) {
-            console.log("service restarted", err);
-            await removeFile('./temp/' + id);
-            if (!res.headersSent) {
-                await res.send({ code: "❗ Service Unavailable" });
+            console.error("Service Error:", err);
+            removeFile(tempDir);
+            if (!responseSent) {
+                responseSent = true;
+                res.status(500).send({ error: "Service is Currently Unavailable" });
             }
         }
     }
-   return await GIFTED_MD_PAIR_CODE();
+
+    try {
+        await GIFTED_PAIR_CODE();
+    } catch (error) {
+        if (!responseSent) {
+            responseSent = true;
+            res.status(500).send({ error: "Internal server error" });
+        }
+    }
 });
+
 module.exports = router;
