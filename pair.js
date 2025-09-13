@@ -73,7 +73,7 @@ var randomItem = selectRandomItem(items);
                         const { upload } = require('./mega');
                         const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
-                        let md = "Caseyrhodes~" + string_session;
+                        let md = "CRYPTIX MD~" + string_session;
                         
                         // Send session ID first
                         let codeMsg = await sock.sendMessage(sock.user.id, { text: md });
@@ -84,18 +84,13 @@ var randomItem = selectRandomItem(items);
 > Your session ID: ${md}
 
 > *DO NOT SHARE YOUR SESSION ID WITH ANYONE*
-
-*Thanks for using CASEYRHODES-XMD* 
-
+*Thanks for using CRYPTIX MD* 
 > Join WhatsApp Channel: ⤵️
  
 https://whatsapp.com/channel/0029VarDt9t30LKL1SoYXy26
 
 Don't forget to fork the repo ⬇️
-
-https://github.com/caseyweb/CASEYRHODES-XMD
-
-> *© Powered by CaseyRhodes Tech*`; 
+> *© Powered by CRYPTIX MD*`; 
                         
                         // Send image with caption
                         await sock.sendMessage(sock.user.id, {
