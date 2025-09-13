@@ -436,9 +436,12 @@
     <h1>CASEYRHODES MINI BOT</h1></h1>
     <p class="subtitle">Get connected in seconds with Caseyrhodes mini bot for free</p>
     
-    <div class="btn-grid">
-      <button onclick="handleClick(this,'https://minipair-77b5709e927c.herokuapp.com')" class="btn">
-        <i class="fas fa-qrcode"></i> get Pair code
+      <div class="btn-grid">
+      <button onclick="window.open('/qr', '_self')" class="btn">
+        <i class="fas fa-qrcode"></i> QR Code
+      </button>
+      <button onclick="window.open('/pair', '_self')" class="btn">
+        <i class="fas fa-link"></i> Pair Code
       </button>
       <button onclick="handleClick(this, 'https://github.com/caseyweb')" class="btn">
         <i class="fab fa-github"></i> follow GitHub
