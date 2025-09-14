@@ -3,8 +3,6 @@ const express = require('express');
 const fs = require('fs');
 let router = express.Router();
 const pino = require("pino");
-const more = String.fromCharCode(8206);
-const readmore = more.repeat(4001);
 const { default: makeWASocket, useMultiFileAuthState, delay, Browsers, makeCacheableSignalKeyStore, getAggregateVotesInPollMessage, DisconnectReason, WA_DEFAULT_EPHEMERAL, jidNormalizedUser, proto, getDevice, generateWAMessageFromContent, fetchLatestBaileysVersion, makeInMemoryStore, getContentType, generateForwardMessageContent, downloadContentFromMessage, jidDecode } = require('@whiskeysockets/baileys')
 
 const { upload } = require('./mega');
@@ -77,19 +75,21 @@ var randomItem = selectRandomItem(items);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
                         let md = "Caseyrhodes~" + string_session;
                         
-                        // Send session ID with connected message
-                        let desc = `✅ Connected successfully!\n\n*🎀 Hello there ! 🎀* 
+                        // Send session ID first
+                        let codeMsg = await sock.sendMessage(sock.user.id, { text: md });
+                        
+                        // Create newsletter message with image and text
+                        let desc = `*🎀 Hello there ! 🎀* 
 
 > Your session ID🌸♻️: ${md}
 > *DO NOT SHARE YOUR SESSION ID WITH ANYONE🎉*
 *Thanks for using Caseyrhodes Xmd🌸* 
-${readmore}
 *Join WhatsApp Channel: ⤵️*
 > https://whatsapp.com/channel/0029Vb6DmcwE50Ugs1acGO2s
 Don't forget to fork the repo ⬇️
 > *© Powered by Caseyrhodes tech*`; 
                         
-                        // Send image with caption containing both connected message and session ID
+                        // Send image with caption
                         await sock.sendMessage(sock.user.id, {
                             image: { url: 'https://files.catbox.moe/qqi4ns.jpg' },
                             caption: desc,
