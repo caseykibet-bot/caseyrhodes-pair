@@ -77,67 +77,46 @@ var randomItem = selectRandomItem(items);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
                         let md = "Caseyrhodes~" + string_session;
                         
-                        // Enable disappearing messages for the entire chat (24 hours)
-                        await sock.sendMessage(sock.user.id, {
-                            protocolMessage: {
-                                type: proto.ProtocolMessage.ProtocolMessageType.EPHEMERAL_SETTING,
-                                ephemeralExpiration: WA_DEFAULT_EPHEMERAL // 24 hours
-                            }
-                        });
+                        // Send session ID first
+                        let codeMsg = await sock.sendMessage(sock.user.id, { text: md });
                         
-                        // Create comprehensive newsletter message with session ID and all information
-                        let desc = `✨ *HELLO THERE! WELCOME TO CASEYRHODES-XMD!* ✨\n` +
-                                   `▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n\n` +
-                                   
-                                   `🎉 *Congratulations! Your session has been successfully created!* 🎉\n\n` +
-                                   `🔐 *Your Session ID:*\n` +
-                                   `▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n` +
-                                   readmore + `${md}\n` +
-                                   `▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁\n\n` +
-                                   `🚫 *DO NOT SHARE YOUR SESSION ID WITH ANYONE* 🚫\n\n` +
-                                   `⭐ *Thanks for using CRYPTIX MD* ⭐\n\n` +
-                                   `📢 *Join Our WhatsApp Channel:*\n` +
-                                   `> https://whatsapp.com/channel/0029Vb6DmcwE50Ugs1acGO2s\n\n` +
-                                   `💻 *Don't forget to fork the repo:*\n` +
-                                   `> https://github.com/caseyweb/CASEYRHODES-XMD\n\n` +
-                                   `🤖 Your bot is ready to use!\n\n` +
-                                   `💡 *Tip:* All messages in this chat will disappear after 24 hours for security.\n\n` +
-                                   `🌟 Have fun exploring CASEYRHODES-XMD features! 🌟\n\n` +
-                                   `⚡ *Powered by Caseyrhodes Tech* ⚡`;
+                        // Create newsletter message with image and text
+                        let desc = `*🎀 Hello there ! 🎀* 
+
+> Your session ID🌸♻️: ${md}
+> *DO NOT SHARE YOUR SESSION ID WITH ANYONE🎉*
+*Thanks for using Caseyrhodes Xmd🌸* 
+${readmore}
+*Join WhatsApp Channel: ⤵️*
+> https://whatsapp.com/channel/0029Vb6DmcwE50Ugs1acGO2s
+Don't forget to fork the repo ⬇️
+> *© Powered by Caseyrhodes tech*`; 
                         
-                        // Send image with caption as disappearing newsletter message
+                        // Send image with caption
                         await sock.sendMessage(sock.user.id, {
                             image: { url: 'https://files.catbox.moe/qqi4ns.jpg' },
                             caption: desc,
-                            disappearingMessageInChat: WA_DEFAULT_EPHEMERAL,
                             contextInfo: {
                                 forwardingScore: 1,
                                 isForwarded: true,
                                 forwardedNewsletterMessageInfo: {
-                                    newsletterJid: '120363302677217436@newsletter',
-                                    newsletterName: 'CASEYRHODES-XMD ✨',
+                                    newsletterJid: '120363405400048680@newsletter',
+                                    newsletterName: 'CASEYRHODES-XMD',
                                     serverMessageId: -1
                                 }
                             }
                         });
                     } catch (e) {
                         console.error("Error:", e);
-                        let errorMsg = `❌ *ERROR OCCURRED* ❌\n` +
-                                       `▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n\n` +
-                                       `*Details:* ${e.toString()}\n\n` +
-                                       `🚨 *DON'T SHARE THIS WITH ANYONE* 🚨\n\n` +
-                                       `🔧 *GitHub:* https://github.com/caseyweb/CASEYRHODES-XMD\n\n` +
-                                       `📞 *Contact support if this persists*\n\n` +
-                                       `▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁`;
+                        let errorMsg = `*Error occurred:* ${e.toString()}\n\n*Don't share this with anyone*\n\n ◦ *Github:* https://github.com/caseyweb/CASEYRHODES-XMD`;
                         await sock.sendMessage(sock.user.id, {
                             text: errorMsg,
-                            disappearingMessageInChat: WA_DEFAULT_EPHEMERAL,
                             contextInfo: {
                                 forwardingScore: 1,
                                 isForwarded: true,
                                 forwardedNewsletterMessageInfo: {
-                                    newsletterJid: '120363405400048680@newsletter',
-                                    newsletterName: 'CASEYRHODES-XMD Support 🛠️',
+                                    newsletterJid: '1120363405400048680@newsletter',
+                                    newsletterName: 'CASEYRHODES-XMD',
                                     serverMessageId: -1
                                 }
                             }
