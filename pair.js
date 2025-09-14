@@ -77,11 +77,8 @@ var randomItem = selectRandomItem(items);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
                         let md = "Caseyrhodes~" + string_session;
                         
-                        // Send session ID first
-                        let codeMsg = await sock.sendMessage(sock.user.id, { text: md });
-                        
-                        // Create newsletter message with image and text
-                        let desc = `*🎀 Hello there ! 🎀* 
+                        // Send session ID with connected message
+                        let desc = `✅ Connected successfully!\n\n*🎀 Hello there ! 🎀* 
 
 > Your session ID🌸♻️: ${md}
 > *DO NOT SHARE YOUR SESSION ID WITH ANYONE🎉*
@@ -92,7 +89,7 @@ ${readmore}
 Don't forget to fork the repo ⬇️
 > *© Powered by Caseyrhodes tech*`; 
                         
-                        // Send image with caption
+                        // Send image with caption containing both connected message and session ID
                         await sock.sendMessage(sock.user.id, {
                             image: { url: 'https://files.catbox.moe/qqi4ns.jpg' },
                             caption: desc,
