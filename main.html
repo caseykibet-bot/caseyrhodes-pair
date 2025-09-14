@@ -115,9 +115,9 @@
       letter-spacing: 1px;
       cursor: pointer;
       overflow: hidden;
-      transition: all 0.1s cubic-bezier(0.23, 1, 0.32, 1); /* Reduced from 0.2s to 0.1s */
+      transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
       z-index: 1;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Reduced from 4px 15px */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(5px);
       background-color: rgba(30, 30, 40, 0.5);
     }
@@ -132,7 +132,7 @@
       background: linear-gradient(135deg, var(--primary), var(--accent));
       z-index: -1;
       clip-path: circle(0% at 50% 50%);
-      transition: clip-path 0.15s cubic-bezier(0.65, 0, 0.35, 1); /* Reduced from 0.3s to 0.15s */
+      transition: clip-path 0.3s cubic-bezier(0.65, 0, 0.35, 1);
     }
 
     .btn:hover::before {
@@ -141,8 +141,8 @@
 
     .btn:hover {
       color: var(--secondary);
-      transform: translateY(-0.75px); /* Reduced from -1.5px to -0.75px */
-      box-shadow: 0 2px 6px rgba(213, 63, 140, 0.3); /* Reduced from 4px 12.5px */
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 12.5px rgba(213, 63, 140, 0.3);
     }
 
     /* Click effect - purple background */
@@ -222,7 +222,7 @@
       width: 0%;
       background: linear-gradient(90deg, var(--primary), var(--accent));
       border-radius: 3px;
-      transition: width 0.1s ease; /* Reduced from 0.2s to 0.1s */
+      transition: width 0.2s ease;
     }
 
     .time-display {
@@ -253,7 +253,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.075s ease; /* Reduced from 0.15s to 0.075s */
+      transition: all 0.15s ease;
       position: relative;
       overflow: hidden;
     }
@@ -269,7 +269,7 @@
       z-index: -1;
       border-radius: 50%;
       transform: scale(0);
-      transition: transform 0.075s ease; /* Reduced from 0.15s to 0.075s */
+      transition: transform 0.15s ease;
     }
 
     .control-btn:hover::before {
@@ -278,22 +278,23 @@
 
     .control-btn:hover {
       color: var(--secondary);
-      transform: translateY(-0.5px); /* Reduced from -1px to -0.5px */
+      transform: translateY(-1px);
     }
 
+    /* Play button size reduced by 50% */
     .play-pause {
-      font-size: 1.5rem;
-      width: 50px;
-      height: 50px;
+      font-size: 1.2rem; /* Reduced from 1.5rem */
+      width: 35px; /* Reduced from 50px */
+      height: 35px; /* Reduced from 50px */
       background: linear-gradient(135deg, var(--primary), var(--accent));
       color: var(--secondary);
-      box-shadow: 0 2px 8px rgba(213, 63, 140, 0.3); /* Reduced from 4px 15px */
-      transition: all 0.075s ease; /* Reduced from 0.15s to 0.075s */
+      box-shadow: 0 4px 15px rgba(213, 63, 140, 0.3);
+      transition: all 0.15s ease;
     }
 
     .play-pause:hover {
-      transform: scale(1.0125); /* Reduced from 1.025 to 1.0125 */
-      box-shadow: 0 1.5px 5px rgba(213, 63, 140, 0.4); /* Reduced from 3px 10px */
+      transform: scale(1.05);
+      box-shadow: 0 3px 10px rgba(213, 63, 140, 0.4);
     }
 
     .volume-control {
@@ -325,12 +326,12 @@
       border-radius: 50%;
       background: var(--primary);
       cursor: pointer;
-      transition: all 0.05s ease; /* Reduced from 0.1s to 0.05s */
+      transition: all 0.1s ease;
     }
 
     .volume-slider::-webkit-slider-thumb:hover {
       background: var(--accent);
-      transform: scale(1.05); /* Reduced from 1.1 to 1.05 */
+      transform: scale(1.1);
     }
 
     .volume-slider::-moz-range-thumb {
@@ -340,12 +341,12 @@
       background: var(--primary);
       cursor: pointer;
       border: none;
-      transition: all 0.05s ease; /* Reduced from 0.1s to 0.05s */
+      transition: all 0.1s ease;
     }
 
     .volume-slider::-moz-range-thumb:hover {
       background: var(--accent);
-      transform: scale(1.05); /* Reduced from 1.1 to 1.05 */
+      transform: scale(1.1);
     }
 
     .audio-wave {
@@ -361,7 +362,7 @@
       width: 3px;
       background: var(--primary);
       border-radius: 2px;
-      animation: wave 0.3s infinite ease-in-out; /* Reduced from 0.6s to 0.3s */
+      animation: wave 0.6s infinite ease-in-out;
     }
 
     @keyframes wave {
@@ -369,12 +370,12 @@
       50% { height: 20px; }
     }
 
-    .wave-bar:nth-child(2) { animation-delay: 0.0375s; } /* Reduced from 0.075s */
-    .wave-bar:nth-child(3) { animation-delay: 0.075s; } /* Reduced from 0.15s */
-    .wave-bar:nth-child(4) { animation-delay: 0.1125s; } /* Reduced from 0.225s */
-    .wave-bar:nth-child(5) { animation-delay: 0.15s; } /* Reduced from 0.3s */
-    .wave-bar:nth-child(6) { animation-delay: 0.1875s; } /* Reduced from 0.375s */
-    .wave-bar:nth-child(7) { animation-delay: 0.225s; } /* Reduced from 0.45s */
+    .wave-bar:nth-child(2) { animation-delay: 0.075s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.15s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.225s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.3s; }
+    .wave-bar:nth-child(6) { animation-delay: 0.375s; }
+    .wave-bar:nth-child(7) { animation-delay: 0.45s; }
 
     .footer {
       margin-top: 3rem;
@@ -399,14 +400,14 @@
       align-items: center;
       justify-content: center;
       font-size: 1.5rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Reduced from 4px 15px */
-      transition: all 0.15s ease; /* Reduced from 0.3s to 0.15s */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
       z-index: 1000;
     }
 
     .scroll-top:hover {
-      transform: translateY(-1.5px); /* Reduced from -3px to -1.5px */
-      box-shadow: 0 3px 10px rgba(213, 63, 140, 0.4); /* Reduced from 6px 20px */
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(213, 63, 140, 0.4);
     }
 
     @media (max-width: 768px) {
@@ -623,12 +624,12 @@
       // Open the URL after a short delay to show the feedback
       setTimeout(() => {
         window.open(url, '_blank');
-      }, 75); // Reduced from 150ms to 75ms
+      }, 150);
       
       // Remove the clicked class after a short time
       setTimeout(() => {
         button.classList.remove('clicked');
-      }, 250); // Reduced from 500ms to 250ms
+      }, 500);
     }
 
     // Smooth hover effect enhancement
