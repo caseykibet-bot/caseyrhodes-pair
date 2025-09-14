@@ -38,4 +38,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD node healthcheck.js || exit 1
 
 # Use pm2-runtime for better process management
-CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+CMD ["pm2-runtime", "start", "npm"]
