@@ -1,21 +1,16 @@
-FROM node:lts-alpine
+FROM node:18-slim
 
-RUN apk add --no-cache \
-    ffmpeg \
-    imagemagick \
-    webp
+RUN apt-get update && \
+    apt-get install -y ffmpeg imagemagick webp && \
+    apt-get clean
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-
-RUN npm ci --only=production && \
-    npm install -g qrcode-terminal pm2
+RUN npm install
 
 COPY . .
 
 EXPOSE 5000
-
-USER node
 
 CMD ["npm", "start"]
