@@ -1,12 +1,9 @@
-FROM node:lts-bookworm-slim
+FROM node:lts-alpine
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apk add --no-cache \
     ffmpeg \
     imagemagick \
-    webp && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    webp
 
 WORKDIR /usr/src/app
 
